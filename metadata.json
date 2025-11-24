@@ -1,0 +1,7 @@
+{
+  "name": "Copy of SmartPDF Pro - AI Analysis & Conversion",
+  "description": "Enterprise-grade PDF to Word converter with Chat-to-PDF, Action Item extraction, Entity recognition, and deep document analytics powered by Gemini 2.5 Flash.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
