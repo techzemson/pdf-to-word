@@ -4,7 +4,8 @@ import {
   BarChart3, RefreshCw, Lock, Sparkles, FileType, 
   Layout, Eye, Share2, Palette, Clock, Settings,
   MessageSquare, History, Briefcase, ChevronRight, 
-  Maximize2, X, Copy, Zap, Save, Trash2, Home
+  Maximize2, X, Copy, Zap, Save, Trash2, Home,
+  Menu, BookOpen, HelpCircle, ArrowRight, Database
 } from 'lucide-react';
 import { 
   AppState, FileData, AnalysisResult, ProcessingStep, 
@@ -55,29 +56,25 @@ const downloadContent = (content: string, filename: string, type: 'doc' | 'md' |
 
 // --- COMPONENTS ---
 
-const Steps = ({ steps }: { steps: ProcessingStep[] }) => (
-  <div className="space-y-4">
-    {steps.map((step, idx) => (
-      <div key={step.id} className="flex items-center gap-3 animate-in fade-in slide-in-from-left-4" style={{animationDelay: `${idx * 100}ms`}}>
-        <div className={`
-          w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-500 shadow-sm
-          ${step.status === 'completed' ? 'bg-green-500 text-white shadow-green-200' : 
-            step.status === 'active' ? 'bg-blue-500 text-white animate-pulse shadow-blue-200' : 'bg-slate-100 text-slate-400'}
-        `}>
-          {step.status === 'completed' ? <CheckCircle2 size={16} /> : idx + 1}
-        </div>
-        <div>
-          <span className={`text-sm font-medium ${step.status === 'pending' ? 'text-slate-400' : 'text-slate-700'}`}>
-            {step.label}
-          </span>
-          {step.status === 'active' && (
-            <div className="h-1 w-24 bg-slate-100 rounded-full mt-1 overflow-hidden">
-              <div className="h-full bg-blue-500 animate-progress"></div>
-            </div>
-          )}
-        </div>
+const ProgressBar = ({ progress, label }: { progress: number, label: string }) => (
+  <div className="w-full max-w-md space-y-2 animate-in fade-in zoom-in duration-300">
+    <div className="flex justify-between text-sm font-medium text-slate-700">
+      <span>{label}</span>
+      <span>{progress}%</span>
+    </div>
+    <div className="h-4 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner">
+      <div 
+        className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-300 ease-out"
+        style={{ width: `${progress}%` }}
+      >
+        <div className="w-full h-full opacity-30 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9InAiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVNUiI+PHBhdGggZD0iTTAgMTBMMTAgME0xMCAyMEwyMCAxMCIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIGZpbGw9InVybCgjcCkiIC8+PC9zdmc+')] animate-[shimmer_1s_linear_infinite]"></div>
       </div>
-    ))}
+    </div>
+    <p className="text-xs text-center text-slate-400 mt-2">
+      {progress < 30 ? "Encrypting & Uploading..." : 
+       progress < 60 ? "Analyzing Content Structure..." :
+       progress < 90 ? "Extracting Entities & Action Items..." : "Finalizing Document..."}
+    </p>
   </div>
 );
 
@@ -91,32 +88,107 @@ const FeatureCard = ({ icon: Icon, title, desc, color }: any) => (
   </div>
 );
 
+const DocumentationTab = () => (
+  <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+    <div className="bg-gradient-to-r from-slate-900 to-slate-800 p-8 text-white">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
+          <BookOpen size={24} className="text-blue-300" />
+        </div>
+        <h2 className="text-2xl font-bold">Documentation & User Guide</h2>
+      </div>
+      <p className="text-slate-300 max-w-2xl">
+        Master PDF to Word with this comprehensive guide. Learn how to extract insights and export formatted reports.
+      </p>
+    </div>
+    
+    <div className="p-8 space-y-12">
+      {/* Section 1 */}
+      <section>
+        <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+          <span className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-sm">1</span>
+          Getting Started
+        </h3>
+        <div className="pl-10 space-y-4 text-slate-600 leading-relaxed">
+          <p>
+            This tool transforms static PDF documents into interactive, analyzable data. To begin, simply drag and drop any PDF file (up to 20MB) into the upload area on the Dashboard.
+          </p>
+          <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 text-sm">
+            <strong>Supported Files:</strong> Currently supports standard PDF documents. Scanned PDFs (images) are supported via OCR automatically.
+          </div>
+        </div>
+      </section>
+
+      {/* Section 2 */}
+      <section>
+        <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+          <span className="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-sm">2</span>
+          Key Features
+        </h3>
+        <div className="pl-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="border border-slate-100 rounded-xl p-4 hover:border-purple-200 transition-colors">
+            <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Sparkles size={16} className="text-purple-500"/> Smart Summary</h4>
+            <p className="text-sm text-slate-500">
+              The AI automatically generates a concise executive summary, highlighting the main purpose and conclusion of the document so you don't have to read the whole thing.
+            </p>
+          </div>
+          <div className="border border-slate-100 rounded-xl p-4 hover:border-orange-200 transition-colors">
+            <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Briefcase size={16} className="text-orange-500"/> Action Items</h4>
+            <p className="text-sm text-slate-500">
+              We extract actionable tasks, to-dos, and next steps directly from the text, categorized by priority (High, Medium, Low).
+            </p>
+          </div>
+          <div className="border border-slate-100 rounded-xl p-4 hover:border-blue-200 transition-colors">
+            <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2"><BarChart3 size={16} className="text-blue-500"/> Deep Analytics</h4>
+            <p className="text-sm text-slate-500">
+              Visualize document complexity, sentiment, and reading time. See which entities (people, companies) are mentioned most frequently.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 3 */}
+      <section>
+        <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+          <span className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm">3</span>
+          Exporting Results
+        </h3>
+        <div className="pl-10 space-y-4 text-slate-600 leading-relaxed">
+          <p>
+            Once analysis is complete, you can download the converted content in multiple formats via the "Export" button in the header.
+          </p>
+          <ul className="list-disc list-inside space-y-1 text-sm pl-4">
+            <li><strong>DOCX:</strong> For Microsoft Word editing.</li>
+            <li><strong>Markdown:</strong> For technical documentation or Notion.</li>
+            <li><strong>JSON:</strong> For developers integrating data.</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </div>
+);
+
 // --- MAIN APP ---
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'chat' | 'preview' | 'settings'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'chat' | 'preview' | 'settings' | 'docs'>('dashboard');
   const [appState, setAppState] = useState<AppState>(AppState.IDLE);
   const [fileData, setFileData] = useState<FileData | null>(null);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   
+  // Progress State
+  const [progress, setProgress] = useState(0);
+
   // Chat State
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState('');
   const [isChatLoading, setIsChatLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Steps State
-  const [steps, setSteps] = useState<ProcessingStep[]>([
-    { id: 'upload', label: 'Secure Encryption', status: 'pending' },
-    { id: 'analyze', label: 'AI Deep Analysis', status: 'pending' },
-    { id: 'extract', label: 'Extracting Entities', status: 'pending' },
-    { id: 'generate', label: 'Generating Document', status: 'pending' },
-  ]);
-
-  // History & Sidebar
+  // UI State
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [recentFiles, setRecentFiles] = useState<HistoryItem[]>([]);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
     const saved = localStorage.getItem('smartpdf_history');
@@ -136,6 +208,11 @@ export default function App() {
     localStorage.setItem('smartpdf_history', JSON.stringify(updated));
   };
 
+  const clearHistory = () => {
+    setRecentFiles([]);
+    localStorage.removeItem('smartpdf_history');
+  };
+
   const processFile = async (file: File) => {
     if (file.size > 20 * 1024 * 1024) {
       setError("File size exceeds 20MB limit.");
@@ -146,11 +223,19 @@ export default function App() {
     setError(null);
     setResult(null);
     setChatHistory([]);
-    setSteps(s => s.map(step => ({...step, status: 'pending'})));
+    setProgress(0);
+
+    // Simulate progress timer
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 90) return 90;
+        // Faster at start, slower at end
+        const increment = prev < 50 ? 5 : 2; 
+        return prev + increment;
+      });
+    }, 500);
 
     try {
-      setSteps(s => s.map(step => step.id === 'upload' ? {...step, status: 'active'} : step));
-      
       const reader = new FileReader();
       reader.readAsDataURL(file);
       
@@ -166,33 +251,26 @@ export default function App() {
         };
         setFileData(newFile);
         
-        setSteps(s => s.map(step => step.id === 'upload' ? {...step, status: 'completed'} : step));
-        
-        // Processing chain
-        setAppState(AppState.PROCESSING);
-        setSteps(s => s.map(step => step.id === 'analyze' ? {...step, status: 'active'} : step));
+        setAppState(AppState.PROCESSING); // Show progress bar
         
         // This is the heavy lifting
         const analysis = await analyzeAndConvertPDF(base64, file.type);
         
-        setSteps(s => s.map(step => step.id === 'analyze' ? {...step, status: 'completed'} : step));
-        setSteps(s => s.map(step => step.id === 'extract' ? {...step, status: 'active'} : step));
-        
-        await new Promise(r => setTimeout(r, 800)); // Visual pacing
-        
-        setSteps(s => s.map(step => step.id === 'extract' ? {...step, status: 'completed'} : step));
-        setSteps(s => s.map(step => step.id === 'generate' ? {...step, status: 'active'} : step));
+        clearInterval(progressInterval);
+        setProgress(100);
 
-        await new Promise(r => setTimeout(r, 600)); // Visual pacing
-
-        setSteps(s => s.map(step => step.id === 'generate' ? {...step, status: 'completed'} : step));
-        
-        setResult(analysis);
-        setAppState(AppState.COMPLETE);
-        addToHistory(newFile, analysis);
+        // Small delay to show 100%
+        setTimeout(() => {
+          setResult(analysis);
+          setAppState(AppState.COMPLETE);
+          addToHistory(newFile, analysis);
+          setActiveTab('dashboard');
+        }, 500);
       };
 
     } catch (err) {
+      clearInterval(progressInterval);
+      setProgress(0);
       setError("Failed to process file. Please try a different PDF.");
       setAppState(AppState.ERROR);
     }
@@ -218,114 +296,145 @@ export default function App() {
     }
   };
 
+  const handleTabChange = (tabId: string) => {
+    // Logic for restricted tabs
+    if ((tabId === 'chat' || tabId === 'preview' || tabId === 'dashboard') && appState !== AppState.COMPLETE) {
+      if (tabId === 'dashboard') {
+         // Dashboard is allowed (shows upload)
+         setActiveTab(tabId as any);
+      } else {
+         // Do nothing or show toast? For now, we will handle empty states inside the tab render
+         setActiveTab(tabId as any); 
+      }
+    } else {
+      setActiveTab(tabId as any);
+    }
+    setMobileMenuOpen(false);
+  };
+
+  const navItems = [
+    { id: 'dashboard', icon: Home, label: 'Dashboard' },
+    { id: 'docs', icon: BookOpen, label: 'Documentation' },
+  ];
+
   return (
     <div className="flex h-screen bg-slate-50 font-sans overflow-hidden">
       
+      {/* Mobile Sidebar Overlay */}
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar Navigation */}
-      <aside className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-slate-900 text-white transition-all duration-300 flex flex-col shadow-2xl z-20`}>
-        <div className="p-6 flex items-center gap-3 border-b border-slate-800">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center shrink-0">
-            <FileType size={18} className="text-white" />
+      <aside className={`
+        fixed md:relative inset-y-0 left-0 z-50
+        w-64 bg-slate-900 text-white transition-transform duration-300 ease-in-out shadow-2xl flex flex-col
+        ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}>
+        <div className="p-6 flex items-center justify-between border-b border-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center shrink-0">
+              <FileType size={18} className="text-white" />
+            </div>
+            <span className="font-bold text-lg tracking-tight">PDF to Word</span>
           </div>
-          {sidebarOpen && <span className="font-bold text-lg tracking-tight">SmartPDF<span className="text-blue-400">Pro</span></span>}
+          <button onClick={() => setMobileMenuOpen(false)} className="md:hidden text-slate-400">
+            <X size={24} />
+          </button>
         </div>
 
-        <nav className="flex-1 py-6 px-3 space-y-1">
-          {[
-            { id: 'dashboard', icon: Home, label: 'Dashboard' },
-            { id: 'chat', icon: MessageSquare, label: 'Chat with PDF' },
-            { id: 'preview', icon: FileText, label: 'Document Preview' },
-            { id: 'settings', icon: Settings, label: 'Settings' },
-          ].map((item) => (
+        <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
+          {navItems.map((item) => (
              <button
                key={item.id}
-               onClick={() => appState === AppState.COMPLETE ? setActiveTab(item.id as any) : null}
-               disabled={appState !== AppState.COMPLETE}
+               onClick={() => handleTabChange(item.id)}
                className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all
-                 ${activeTab === item.id && appState === AppState.COMPLETE 
+                 ${activeTab === item.id
                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/50' 
                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'}
-                 ${appState !== AppState.COMPLETE ? 'opacity-50 cursor-not-allowed' : ''}
                `}
              >
                <item.icon size={20} />
-               {sidebarOpen && <span className="font-medium text-sm">{item.label}</span>}
+               <span className="font-medium text-sm">{item.label}</span>
+               {item.id === 'docs' && <span className="ml-auto text-[10px] bg-slate-800 px-1.5 py-0.5 rounded text-blue-300">New</span>}
              </button>
           ))}
           
           <div className="my-4 border-t border-slate-800 mx-2"></div>
           
-          {sidebarOpen && <p className="px-4 text-xs font-semibold text-slate-500 uppercase mb-2">Recent Files</p>}
+          <p className="px-4 text-xs font-semibold text-slate-500 uppercase mb-2">Recent Files</p>
           <div className="space-y-1 overflow-y-auto max-h-48 scrollbar-hide">
+             {recentFiles.length === 0 && <p className="px-4 text-xs text-slate-600 italic">No recent files</p>}
              {recentFiles.map(file => (
                <div key={file.id} className="px-3 py-2 text-xs text-slate-400 hover:text-white truncate cursor-pointer hover:bg-slate-800 rounded mx-2 flex gap-2 items-center">
                   <History size={12} />
-                  {sidebarOpen && file.fileName}
+                  {file.fileName}
                </div>
              ))}
           </div>
         </nav>
-
-        <div className="p-4 border-t border-slate-800">
-           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 bg-slate-800 rounded-lg text-slate-400 hover:text-white w-full flex justify-center">
-              {sidebarOpen ? <ChevronRight size={20} className="rotate-180" /> : <ChevronRight size={20} />}
-           </button>
-        </div>
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col overflow-hidden relative">
+      <main className="flex-1 flex flex-col overflow-hidden relative w-full">
         
         {/* Top Bar */}
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm z-10">
+        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-8 shadow-sm z-10 shrink-0">
            <div className="flex items-center gap-4">
-              <h2 className="text-xl font-bold text-slate-800">
-                {appState === AppState.IDLE ? 'Welcome' : 
+              <button onClick={() => setMobileMenuOpen(true)} className="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+                <Menu size={24} />
+              </button>
+              <h2 className="text-lg sm:text-xl font-bold text-slate-800 truncate max-w-[200px] sm:max-w-none">
+                {activeTab === 'docs' ? 'Documentation' :
+                 activeTab === 'settings' ? 'Settings' :
+                 appState === AppState.IDLE ? 'Dashboard' : 
                  appState === AppState.COMPLETE ? (fileData?.name || 'Document') : 'Processing...'}
               </h2>
-              {appState === AppState.COMPLETE && (
-                <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium flex items-center gap-1">
-                  <CheckCircle2 size={12} /> Ready
-                </span>
-              )}
            </div>
            
-           {appState === AppState.COMPLETE && (
+           {appState === AppState.COMPLETE && activeTab !== 'docs' && activeTab !== 'settings' && (
              <div className="flex gap-2">
                <button 
-                 onClick={() => setResult(null) || setAppState(AppState.IDLE)} 
-                 className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg flex items-center gap-2"
+                 onClick={() => { setResult(null); setAppState(AppState.IDLE); setProgress(0); setActiveTab('dashboard'); }} 
+                 className="px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg flex items-center gap-2"
+                 title="Reset"
                >
-                 <Trash2 size={16} /> Clear
+                 <Trash2 size={16} /> <span className="hidden sm:inline">Clear</span>
                </button>
                <button 
                  onClick={() => result && downloadContent(result.markdownContent, result.suggestedFilename, 'doc')}
-                 className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg flex items-center gap-2 shadow-lg shadow-blue-200 transition-transform hover:-translate-y-0.5"
+                 className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg flex items-center gap-2 shadow-lg shadow-blue-200 transition-transform hover:-translate-y-0.5"
                >
-                 <Download size={16} /> Download DOCX
+                 <Download size={16} /> <span className="hidden sm:inline">Export</span>
                </button>
              </div>
            )}
         </header>
 
         {/* Content Body */}
-        <div className="flex-1 overflow-y-auto bg-slate-50/50 p-6 sm:p-8">
+        <div className="flex-1 overflow-y-auto bg-slate-50/50 p-4 sm:p-6 lg:p-8 scroll-smooth">
           
-          {/* STATE: IDLE (Upload) */}
-          {appState === AppState.IDLE && (
-            <div className="max-w-5xl mx-auto">
-              <div className="text-center mb-12">
-                <h1 className="text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">
-                  Transform PDF to <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Intelligent Word Docs</span>
+          {/* DOCS TAB */}
+          {activeTab === 'docs' && <DocumentationTab />}
+
+          {/* DASHBOARD - IDLE STATE */}
+          {activeTab === 'dashboard' && appState === AppState.IDLE && (
+            <div className="max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="text-center mb-8 sm:mb-12 pt-4 sm:pt-10">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight leading-tight">
+                  PDF to <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Word</span>
                 </h1>
-                <p className="text-lg text-slate-500 max-w-2xl mx-auto">
-                  More than just a converter. Get AI-powered summaries, action items, entity extraction, and chat with your documents securely.
+                <p className="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto px-4">
+                  Drag & drop your PDF to get AI summaries, action items, and Word conversion instantly.
                 </p>
               </div>
 
               {/* Upload Box */}
               <div 
-                className="relative group cursor-pointer"
+                className="relative group cursor-pointer max-w-2xl mx-auto"
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
                   e.preventDefault();
@@ -333,12 +442,12 @@ export default function App() {
                 }}
               >
                 <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-400 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                <div className="relative bg-white rounded-2xl p-10 border-2 border-slate-100 hover:border-blue-500 transition-colors shadow-xl flex flex-col items-center justify-center min-h-[300px]">
-                   <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                     <Upload className="text-blue-600" size={40} />
+                <div className="relative bg-white rounded-2xl p-8 sm:p-12 border-2 border-slate-100 hover:border-blue-500 transition-colors shadow-xl flex flex-col items-center justify-center min-h-[250px] sm:min-h-[300px]">
+                   <div className="w-16 h-16 sm:w-20 sm:h-20 bg-blue-50 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                     <Upload className="text-blue-600" size={32} />
                    </div>
-                   <h3 className="text-xl font-semibold text-slate-800 mb-2">Drop your PDF here</h3>
-                   <p className="text-slate-500 mb-6">or click to browse (Max 20MB)</p>
+                   <h3 className="text-lg sm:text-xl font-semibold text-slate-800 mb-2 text-center">Drop your PDF here</h3>
+                   <p className="text-slate-500 mb-6 text-sm sm:text-base">or click to browse (Max 20MB)</p>
                    <input 
                      type="file" 
                      className="absolute inset-0 opacity-0 cursor-pointer"
@@ -346,49 +455,43 @@ export default function App() {
                      onChange={(e) => e.target.files?.[0] && processFile(e.target.files[0])}
                    />
                    
-                   <div className="flex gap-4 text-xs text-slate-400 font-medium">
-                     <span className="flex items-center gap-1"><Lock size={12} /> Secure Encryption</span>
-                     <span className="flex items-center gap-1"><Zap size={12} /> Fast Processing</span>
+                   <div className="flex gap-4 text-xs text-slate-400 font-medium flex-wrap justify-center">
+                     <span className="flex items-center gap-1"><Lock size={12} /> Encrypted</span>
+                     <span className="flex items-center gap-1"><Zap size={12} /> Instant AI</span>
                    </div>
                 </div>
               </div>
 
               {/* Features Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-12">
-                 <FeatureCard icon={Sparkles} color="bg-purple-500" title="AI Summary" desc="Get instant executive summaries." />
-                 <FeatureCard icon={Briefcase} color="bg-orange-500" title="Action Items" desc="Auto-extract tasks & to-dos." />
-                 <FeatureCard icon={MessageSquare} color="bg-green-500" title="Chat with PDF" desc="Ask questions to your doc." />
-                 <FeatureCard icon={BarChart3} color="bg-blue-500" title="Deep Stats" desc="Sentiment & tone analysis." />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-12 px-2">
+                 <FeatureCard icon={Sparkles} color="bg-purple-500" title="Smart Summary" desc="Get the gist in seconds." />
+                 <FeatureCard icon={Briefcase} color="bg-orange-500" title="Action Items" desc="Auto-extracted to-do lists." />
+                 <FeatureCard icon={Layout} color="bg-green-500" title="Perfect Formatting" desc="Retains layout structure." />
+                 <FeatureCard icon={BarChart3} color="bg-blue-500" title="Analytics" desc="Sentiment & entities." />
               </div>
             </div>
           )}
 
-          {/* STATE: PROCESSING / UPLOADING */}
-          {(appState === AppState.PROCESSING || appState === AppState.UPLOADING || appState === AppState.ANALYZING) && (
-            <div className="flex flex-col items-center justify-center h-full max-w-lg mx-auto">
-               <div className="w-full bg-white p-8 rounded-2xl shadow-xl border border-slate-100">
-                  <div className="flex items-center gap-4 mb-8">
-                     <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <FileText className="text-blue-600 animate-pulse" size={24} />
-                     </div>
-                     <div>
-                        <h3 className="font-bold text-slate-800 text-lg">Analyzing Document</h3>
-                        <p className="text-sm text-slate-500">{fileData?.name}</p>
-                     </div>
+          {/* DASHBOARD - PROCESSING STATE */}
+          {activeTab === 'dashboard' && (appState === AppState.PROCESSING || appState === AppState.UPLOADING) && (
+            <div className="flex flex-col items-center justify-center h-full max-w-lg mx-auto p-4">
+               <div className="w-full bg-white p-8 rounded-2xl shadow-xl border border-slate-100 flex flex-col items-center text-center">
+                  <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 relative">
+                     <FileText className="text-blue-600 relative z-10" size={32} />
+                     <div className="absolute inset-0 bg-blue-400 rounded-2xl blur opacity-20 animate-pulse"></div>
                   </div>
-                  <Steps steps={steps} />
+                  <h3 className="font-bold text-slate-800 text-xl mb-2">Analyzing {fileData?.name}</h3>
+                  <p className="text-slate-500 text-sm mb-8">Please wait while our AI reads your document...</p>
+                  
+                  {/* REAL PERCENTAGE PROGRESS BAR */}
+                  <ProgressBar progress={progress} label="Processing" />
                </div>
-               <p className="mt-8 text-slate-400 text-sm animate-pulse">This usually takes 10-20 seconds...</p>
             </div>
           )}
 
-          {/* STATE: COMPLETE */}
-          {appState === AppState.COMPLETE && result && (
-            <div className="max-w-6xl mx-auto animate-in fade-in duration-500">
-              
-              {/* DASHBOARD TAB */}
-              {activeTab === 'dashboard' && (
-                <div className="space-y-6">
+          {/* DASHBOARD - COMPLETE STATE */}
+          {activeTab === 'dashboard' && appState === AppState.COMPLETE && result && (
+            <div className="max-w-6xl mx-auto animate-in fade-in duration-500 space-y-6">
                   {/* Top Stats Row */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {[
@@ -398,12 +501,12 @@ export default function App() {
                       { label: 'Tone', val: result.stats.tone, icon: Sparkles, col: 'text-purple-600', bg: 'bg-purple-50' }
                     ].map((stat, i) => (
                       <div key={i} className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center gap-3">
-                         <div className={`w-10 h-10 ${stat.bg} rounded-lg flex items-center justify-center ${stat.col}`}>
+                         <div className={`w-10 h-10 ${stat.bg} rounded-lg flex items-center justify-center ${stat.col} shrink-0`}>
                            <stat.icon size={20} />
                          </div>
-                         <div>
-                           <p className="text-xs text-slate-500 uppercase font-bold">{stat.label}</p>
-                           <p className="text-lg font-bold text-slate-800">{stat.val}</p>
+                         <div className="min-w-0">
+                           <p className="text-xs text-slate-500 uppercase font-bold truncate">{stat.label}</p>
+                           <p className="text-lg font-bold text-slate-800 truncate">{stat.val}</p>
                          </div>
                       </div>
                     ))}
@@ -450,16 +553,8 @@ export default function App() {
                        </div>
                     </div>
 
-                    {/* Key Quotes & File Info - Right Col */}
+                    {/* File Info - Right Col */}
                     <div className="space-y-6">
-                        <div className="bg-slate-900 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden">
-                           <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500 rounded-full blur-3xl opacity-20 -mr-10 -mt-10"></div>
-                           <h3 className="text-sm font-bold uppercase text-slate-400 mb-4 relative z-10">Key Takeaway</h3>
-                           <blockquote className="text-lg font-medium italic relative z-10 font-serif">
-                             "{result.keyQuotes[0] || result.summary.slice(0, 100)}"
-                           </blockquote>
-                        </div>
-                        
                         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                            <h3 className="text-sm font-bold text-slate-400 uppercase mb-4">File Details</h3>
                            <div className="space-y-3 text-sm">
@@ -482,122 +577,82 @@ export default function App() {
 
                   {/* Charts Section */}
                   <AnalysisCharts stats={result.stats} entities={result.entities} />
-                </div>
-              )}
+            </div>
+          )}
 
-              {/* CHAT TAB */}
-              {activeTab === 'chat' && (
-                 <div className="bg-white rounded-2xl shadow-sm border border-slate-200 h-[70vh] flex flex-col overflow-hidden">
-                    <div className="bg-slate-50 p-4 border-b border-slate-100 flex items-center gap-3">
-                       <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600">
-                          <MessageSquare size={20} />
-                       </div>
-                       <div>
-                          <h3 className="font-bold text-slate-800">Chat with Document</h3>
-                          <p className="text-xs text-slate-500">Ask anything about {fileData?.name}</p>
-                       </div>
-                    </div>
-                    
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/30">
-                       {chatHistory.length === 0 && (
-                          <div className="text-center text-slate-400 mt-20">
-                             <MessageSquare size={48} className="mx-auto mb-4 opacity-20" />
-                             <p>Type below to start asking questions!</p>
-                             <div className="flex flex-wrap gap-2 justify-center mt-4">
-                               {["Summarize this", "What are the main risks?", "List the key dates"].map(q => (
-                                 <button key={q} onClick={() => setChatInput(q)} className="text-xs bg-white border border-slate-200 px-3 py-1 rounded-full hover:bg-slate-50">
-                                   {q}
-                                 </button>
-                               ))}
-                             </div>
-                          </div>
-                       )}
-                       {chatHistory.map(msg => (
-                          <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                             <div className={`max-w-[80%] rounded-2xl p-4 text-sm ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-br-none' : 'bg-white border border-slate-200 text-slate-700 rounded-bl-none shadow-sm'}`}>
-                                {msg.text}
-                             </div>
-                          </div>
-                       ))}
-                       {isChatLoading && (
-                          <div className="flex justify-start">
-                             <div className="bg-slate-100 rounded-2xl rounded-bl-none p-4 flex gap-1">
-                                <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></span>
-                                <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-100"></span>
-                                <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-200"></span>
-                             </div>
-                          </div>
-                       )}
-                       <div ref={chatEndRef}></div>
-                    </div>
+          {/* CHAT TAB - REMOVED */}
+          {/* PREVIEW TAB - REMOVED */}
 
-                    <div className="p-4 bg-white border-t border-slate-100">
-                       <div className="flex gap-2">
-                          <input 
-                            value={chatInput}
-                            onChange={(e) => setChatInput(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleChat()}
-                            placeholder="Ask a question about your PDF..."
-                            className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                          />
+          {/* SETTINGS TAB */}
+          {activeTab === 'settings' && (
+             <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 animate-in slide-in-from-right-4 duration-300">
+                <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                  <Settings size={20} className="text-slate-400"/> Settings & Export
+                </h3>
+                
+                <div className="mb-8">
+                  <h4 className="font-bold text-slate-700 mb-4 text-sm uppercase tracking-wide flex items-center gap-2">
+                    <Download size={16} /> Export Options
+                  </h4>
+                  
+                  {result ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {['doc', 'json', 'txt', 'md'].map((type: any) => (
                           <button 
-                            onClick={handleChat} 
-                            disabled={!chatInput.trim() || isChatLoading}
-                            className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-4 rounded-xl transition-colors"
+                            key={type}
+                            onClick={() => downloadContent(result.markdownContent, result.suggestedFilename, type)}
+                            className="p-4 border border-slate-200 hover:border-blue-500 hover:bg-blue-50 text-slate-600 rounded-xl flex items-center justify-center gap-2 uppercase font-bold transition-all"
                           >
-                             <ChevronRight size={24} />
+                            <Download size={18} /> {type.toUpperCase()}
                           </button>
-                       </div>
+                      ))}
                     </div>
-                 </div>
-              )}
-
-              {/* PREVIEW TAB */}
-              {activeTab === 'preview' && (
-                 <div className="bg-white rounded-2xl shadow-sm border border-slate-200 h-[70vh] flex flex-col">
-                    <div className="flex items-center justify-between p-4 border-b border-slate-100">
-                       <h3 className="font-bold text-slate-800">Document Content (Markdown)</h3>
-                       <button 
-                         onClick={() => navigator.clipboard.writeText(result.markdownContent)}
-                         className="text-xs flex items-center gap-1 text-slate-500 hover:text-blue-600"
-                       >
-                         <Copy size={14} /> Copy
+                  ) : (
+                    <div className="bg-slate-50 rounded-xl p-6 text-center border border-dashed border-slate-200">
+                       <p className="text-slate-500 text-sm mb-2">No analysis data available to export.</p>
+                       <button onClick={() => setActiveTab('dashboard')} className="text-blue-600 text-sm font-medium hover:underline">
+                         Upload a PDF to unlock exports
                        </button>
                     </div>
-                    <div className="flex-1 overflow-y-auto p-8 font-mono text-sm text-slate-700 bg-slate-50 leading-relaxed whitespace-pre-wrap">
-                       {result.markdownContent}
-                    </div>
-                 </div>
-              )}
+                  )}
+                </div>
 
-              {/* SETTINGS TAB */}
-              {activeTab === 'settings' && (
-                 <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                    <h3 className="text-xl font-bold text-slate-800 mb-6">Export Options</h3>
-                    <div className="grid grid-cols-2 gap-4 mb-8">
-                       {['doc', 'json', 'txt', 'md'].map((type: any) => (
-                          <button 
-                             key={type}
-                             onClick={() => downloadContent(result.markdownContent, result.suggestedFilename, type)}
-                             className="p-4 border border-slate-200 rounded-xl hover:border-blue-500 hover:bg-blue-50 flex items-center justify-center gap-2 uppercase font-bold text-slate-600 transition-all"
-                          >
-                             <Download size={18} /> {type.toUpperCase()}
-                          </button>
-                       ))}
-                    </div>
-                    
-                    <div className="border-t border-slate-100 pt-6">
-                       <h4 className="font-bold text-slate-800 mb-4">Application Info</h4>
-                       <div className="space-y-2 text-sm text-slate-500">
-                          <p>Version: 2.0.0 (Beta)</p>
-                          <p>Engine: Google Gemini 2.5 Flash</p>
-                          <p>Encryption: Client-side ephemeral</p>
-                       </div>
-                    </div>
-                 </div>
-              )}
-
-            </div>
+                <div className="mb-8 border-t border-slate-100 pt-6">
+                  <h4 className="font-bold text-slate-700 mb-4 text-sm uppercase tracking-wide flex items-center gap-2">
+                    <Database size={16} /> Data Management
+                  </h4>
+                  <div className="flex items-center justify-between bg-slate-50 p-4 rounded-xl border border-slate-100">
+                     <div>
+                       <p className="text-sm font-semibold text-slate-700">Clear Search History</p>
+                       <p className="text-xs text-slate-500">Remove recent files list from sidebar.</p>
+                     </div>
+                     <button 
+                       onClick={clearHistory}
+                       className="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 text-xs font-medium rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
+                     >
+                       Clear History
+                     </button>
+                  </div>
+                </div>
+                
+                <div className="border-t border-slate-100 pt-6">
+                   <h4 className="font-bold text-slate-700 mb-4 text-sm uppercase tracking-wide">Application Info</h4>
+                   <div className="bg-slate-50 rounded-xl p-4 space-y-3 text-sm text-slate-500">
+                      <div className="flex justify-between">
+                        <span>Version</span>
+                        <span className="font-mono text-slate-700">2.1.0 (Free Tier)</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>AI Engine</span>
+                        <span className="font-mono text-slate-700">Gemini 2.5 Flash</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Encryption</span>
+                        <span className="font-mono text-slate-700">Client-side Ephemeral</span>
+                      </div>
+                   </div>
+                </div>
+             </div>
           )}
 
         </div>
@@ -605,10 +660,10 @@ export default function App() {
 
       {/* Error Toast */}
       {error && (
-        <div className="fixed bottom-8 right-8 bg-red-50 text-red-600 px-6 py-4 rounded-xl shadow-lg border border-red-100 flex items-center gap-3 animate-bounce">
-           <AlertCircle size={24} />
-           <p className="font-medium">{error}</p>
-           <button onClick={() => setError(null)} className="ml-2"><X size={16} /></button>
+        <div className="fixed bottom-8 right-8 z-50 max-w-sm w-full bg-red-50 text-red-600 px-6 py-4 rounded-xl shadow-lg border border-red-100 flex items-center gap-3 animate-bounce">
+           <AlertCircle size={24} className="shrink-0" />
+           <p className="font-medium text-sm">{error}</p>
+           <button onClick={() => setError(null)} className="ml-auto p-1 hover:bg-red-100 rounded"><X size={16} /></button>
         </div>
       )}
     </div>

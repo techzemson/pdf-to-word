@@ -90,7 +90,7 @@ export const AnalysisCharts: React.FC<AnalysisChartsProps> = ({ stats, entities 
             <BarChart data={entityData} layout="vertical" margin={{ left: 0 }}>
               <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
               <XAxis type="number" hide />
-              <YAxis dataKey="name" type="category" width={80} tick={{fontSize: 11}} axisLine={false} tickLine={false} />
+              <YAxis dataKey="name" type="category" width={80} tick={{fontSize: 10, fill: '#64748b'}} axisLine={false} tickLine={false} />
               <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}/>
               <Bar dataKey="count" fill="#3b82f6" radius={[0, 4, 4, 0]} barSize={20} />
             </BarChart>
@@ -110,7 +110,7 @@ export const AnalysisCharts: React.FC<AnalysisChartsProps> = ({ stats, entities 
           <ResponsiveContainer width="100%" height="100%">
             <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
               <PolarGrid stroke="#e2e8f0" />
-              <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 12, fontWeight: 500 }} />
+              <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 11, fontWeight: 500 }} />
               <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} />
               <Radar
                 name="Score"
